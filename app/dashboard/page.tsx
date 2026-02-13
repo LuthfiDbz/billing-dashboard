@@ -2,6 +2,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { DollarSign, Users, FileText, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { logout } from "../login/actions";
 
 // Dummy data - akan diganti dengan fetch dari Supabase nanti
 const statsData = [
@@ -76,7 +78,7 @@ export default function DashboardPage() {
 
           {/* Placeholder untuk section berikutnya */}
           <div className="mt-6 rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            <p>Chart & Table Section akan ditambahkan di task berikutnya</p>
+            <p>Chart & Table Section akan ditambahkan di task berikutnyaaaa</p>
           </div>
         </main>
       </div>
