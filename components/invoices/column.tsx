@@ -17,11 +17,12 @@ import { id } from "date-fns/locale";
 
 export type Invoice = {
   id: string;
+  invoice_number: string;
   customer_name: string;
   amount: number;
   status: "Paid" | "Pending" | "Overdue" | "Draft";
   due_date: string;
-  created_at: string;
+  created_at: string;   
 };
 
 const statusVariants = {
@@ -32,11 +33,11 @@ const statusVariants = {
 
 export const columns: ColumnDef<Invoice>[] = [
   {
-    accessorKey: "id",
-    header: "Invoice ID",
+    accessorKey: "invoice_number",
+    header: "Invoice Number",
     cell: ({ row }) => {
-      const id = row.getValue("id") as string;
-      return <span className="font-mono text-sm">#{id.slice(0, 8)}</span>;
+      const num = row.getValue("invoice_number") as string;
+      return <span className="font-mono text-sm">#{num}</span>;
     },
   },
   {

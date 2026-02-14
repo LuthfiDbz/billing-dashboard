@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/popover";
 
 import { invoiceSchema, InvoiceFormValues } from "@/lib/schemas/invoice";
+import { createInvoice } from "@/app/dashboard/invoices/action";
 
 export function AddInvoiceForm() {
   const [open, setOpen] = useState(false);
@@ -54,13 +55,23 @@ export function AddInvoiceForm() {
     },
   });
 
-  function onSubmit(values: InvoiceFormValues) {
+  async function onSubmit(values: InvoiceFormValues) {
     // TODO: Akan diganti dengan Supabase insert
     console.log("Form submitted:", values);
+
+    // setIsDeleting(true)
+    try {
+      const result = await createInvoice(values)
+      if (result?.error) alert(result.error)
+      form.reset();
+      setOpen(false);
+    } catch (err) {
+      console.error(err)
+    } finally {
+      // setIsDeleting(false)
+    }
     
     // Reset form dan tutup sheet setelah submit
-    form.reset();
-    setOpen(false);
   }
 
   return (
@@ -80,7 +91,7 @@ export function AddInvoiceForm() {
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-2">
             {/* Customer Name */}
             <FormField
               control={form.control}
@@ -120,7 +131,7 @@ export function AddInvoiceForm() {
             {/* Due Date */}
             <FormField
               control={form.control}
-              name="amount"
+              name="due_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Due Date</FormLabel>
