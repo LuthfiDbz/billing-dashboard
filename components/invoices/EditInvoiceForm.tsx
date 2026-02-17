@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Form,
@@ -41,60 +40,89 @@ import {
 } from "@/components/ui/popover";
 
 import { invoiceSchema, InvoiceFormValues } from "@/lib/schemas/invoice";
-import { createInvoice } from "@/app/dashboard/invoices/action";
+import { Invoice } from "./column";
+import { updateInvoice } from "@/app/dashboard/invoices/action";
 
-export function AddInvoiceForm() {
-  const [open, setOpen] = useState(false);
+interface EditInvoiceFormProps {
+  invoice: Invoice | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
+export function EditInvoiceForm({
+  invoice,
+  open,
+  onOpenChange,
+}: EditInvoiceFormProps) {
   const form = useForm<InvoiceFormValues>({
     // resolver: zodResolver(invoiceSchema),
     defaultValues: {
+      id: "",
       customer_name: "",
       amount: 0,
       status: "Pending",
     },
   });
 
+  // Pre-fill form saat invoice berubah
+  useEffect(() => {
+    if (invoice) {
+      form.reset({
+        customer_name: invoice.customer_name,
+        amount: invoice.amount,
+        due_date: new Date(invoice.due_date),
+        status: invoice.status,
+      });
+    }
+  }, [invoice, form]);
+
   async function onSubmit(values: InvoiceFormValues) {
-    // TODO: Akan diganti dengan Supabase insert
-    values.invoice_number = "INV-" + Date.now().toString()
-    // values.due_date = format(values.due_date, "yyyy-MM-dd");
-    console.log("Form submitted:", values);
-    // return
+    // TODO: Implement Supabase update
+    // const { error } = await supabase
+    //   .from('invoices')
+    //   .update(values)
+    //   .eq('id', invoice?.id)
+    
+    console.log("Update invoice:", invoice?.id, values);
+    
+   
 
     // setIsDeleting(true)
     try {
-      const result = await createInvoice(values)
+      const result = await updateInvoice(invoice?.id || "", values)
       if (result?.error) return alert(result.error)
       form.reset();
-      setOpen(false);
+      // Close sheet after submit
+      onOpenChange(false);
+       // Show success message (optional)
+      alert(`Invoice ${invoice?.id} updated successfully!`);
     } catch (err) {
       console.error(err)
     } finally {
       // setIsDeleting(false)
     }
-    
-    // Reset form dan tutup sheet setelah submit
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Invoice
-        </Button>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Add New Invoice</SheetTitle>
+          <SheetTitle>Edit Invoice</SheetTitle>
           <SheetDescription>
-            Fill in the details to create a new invoice. All fields are required.
+            Update invoice details for {invoice?.customer_name}
           </SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+            {/* Invoice ID Display */}
+            <div className="rounded-lg border bg-muted/50 p-3">
+              <p className="text-xs text-muted-foreground">Invoice ID</p>
+              <p className="font-mono text-sm font-medium">
+                #{invoice?.invoice_number}
+              </p>
+            </div>
+
             {/* Customer Name */}
             <FormField
               control={form.control}
@@ -160,11 +188,8 @@ export function AddInvoiceForm() {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        // selected={field.value}
+                        selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date < new Date(new Date().setHours(0, 0, 0, 0))
-                        }
                         initialFocus
                       />
                     </PopoverContent>
@@ -184,6 +209,7 @@ export function AddInvoiceForm() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -202,18 +228,19 @@ export function AddInvoiceForm() {
               )}
             />
 
-            {/* Submit Button */}
+            {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
                 variant="outline"
                 className="flex-1"
-                onClick={() => setOpen(false)}
+                onClick={() => onOpenChange(false)}
               >
                 Cancel
               </Button>
               <Button type="submit" className="flex-1">
-                Create Invoice
+                <Save className="mr-2 h-4 w-4" />
+                Update Invoice
               </Button>
             </div>
           </form>

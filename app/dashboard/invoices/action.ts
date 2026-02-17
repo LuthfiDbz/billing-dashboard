@@ -15,7 +15,7 @@ export async function createInvoice(formData: InvoiceFormValues) {
 }
 
 // UPDATE
-export async function updateInvoice(id: string, formData: { title: string }) {
+export async function updateInvoice(id: string, formData: InvoiceFormValues) {
   const supabase = await createClient()
   const { error } = await supabase.from('invoices').update(formData).eq('id', id)
 

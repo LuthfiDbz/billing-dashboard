@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 export type Invoice = {
-  id: string;
+  id?: string;
   invoice_number: string;
   customer_name: string;
   amount: number;
@@ -31,7 +31,14 @@ const statusVariants = {
   Overdue: "destructive",
 } as const;
 
-export const columns: ColumnDef<Invoice>[] = [
+// Type untuk action callbacks
+export type InvoiceActions = {
+  onView?: (invoice: Invoice) => void;
+  onEdit?: (invoice: Invoice) => void;
+  onDelete?: (invoice: Invoice) => void;
+};
+
+export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
   {
     accessorKey: "invoice_number",
     header: "Invoice Number",
@@ -102,13 +109,25 @@ export const columns: ColumnDef<Invoice>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => console.log("View details:", invoice.id)}
+              onClick={() => {
+                if (actions?.onView) {
+                  actions.onView(invoice);
+                } else {
+                  console.log("View details:", invoice.id);
+                }
+              }}  
             >
               <Eye className="mr-2 h-4 w-4" />
               View Details
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => console.log("Edit invoice:", invoice.id)}
+              onClick={() => {
+                if (actions?.onEdit) {
+                  actions.onEdit(invoice);
+                } else {
+                  console.log("Edit invoice:", invoice.id);
+                }
+              }}
             >
               <Pencil className="mr-2 h-4 w-4" />
               Edit
@@ -116,7 +135,13 @@ export const columns: ColumnDef<Invoice>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive"
-              onClick={() => console.log("Delete invoice:", invoice.id)}
+              onClick={() => {
+                if (actions?.onDelete) {
+                  actions.onDelete(invoice);
+                } else {
+                  console.log("Delete invoice:", invoice.id);
+                }
+              }}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
