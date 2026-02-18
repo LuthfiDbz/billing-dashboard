@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Eye, Pencil, Trash2, Download } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
@@ -36,6 +36,7 @@ export type InvoiceActions = {
   onView?: (invoice: Invoice) => void;
   onEdit?: (invoice: Invoice) => void;
   onDelete?: (invoice: Invoice) => void;
+  onDownload?: (invoice: Invoice) => void;
 };
 
 export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
@@ -131,6 +132,18 @@ export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
             >
               <Pencil className="mr-2 h-4 w-4" />
               Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                if (actions?.onDownload) {
+                  actions.onDownload(invoice);
+                } else {
+                  console.log("Download invoice:", invoice.id);
+                }
+              }}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download PDF
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

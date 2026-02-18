@@ -8,6 +8,7 @@ import { columns, Invoice } from "./column";
 import { AddInvoiceForm } from "./AddInvoiceForm";
 import { EditInvoiceForm } from "./EditInvoiceForm";
 import { DeleteInvoiceDialog } from "./DeleteInvoiceDialog";
+import { generateInvoicePDF, InvoiceData } from "@/lib/download-inv-generator";
 
 interface InvoicesDashboardProps {
   dataInvoices: Invoice[];
@@ -23,7 +24,7 @@ export default function InvoicesDashboard({dataInvoices} : InvoicesDashboardProp
     console.log("View invoice:", invoice);
     // TODO: Implement view detail
     // router.push(`/dashboard/invoices/${invoice.id}`)
-    alert(`View detail for invoice #${invoice.id.slice(0, 8)}`);
+    // alert(`View detail for invoice #${invoice?.id.slice(0, 8)}`);
   };
 
   // Handler untuk Edit
@@ -45,10 +46,36 @@ export default function InvoicesDashboard({dataInvoices} : InvoicesDashboardProp
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
+  const handleDownload = (invoice: Invoice) => {
+    console.log("masukk gaa")
+    const invoiceData: InvoiceData = {
+      id: invoice.id || "",
+      customer_name: invoice.customer_name,
+      customer_email: "customer@example.com", 
+      customer_address: "Jakarta, Indonesia", 
+      invoice_number: invoice.invoice_number,
+      amount: invoice.amount,
+      status: invoice.status,
+      due_date: invoice.due_date,
+      created_at: invoice.created_at,
+      items: [
+        {
+          description: "Professional Services",
+          quantity: 1,
+          unit_price: invoice.amount,
+          total: invoice.amount,
+        },
+      ],
+    };
+
+    generateInvoicePDF(invoiceData);
+  };
+
   const defaultColumns = columns({
     onView: handleView,
     onEdit: handleEdit,
     onDelete: handleDelete,
+    onDownload: handleDownload,
   });
 
 

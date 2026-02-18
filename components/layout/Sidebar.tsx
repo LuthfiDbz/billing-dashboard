@@ -22,16 +22,16 @@ const menuItems = [
     icon: FileText,
     href: "/dashboard/invoices",
   },
-  {
-    label: "Customers",
-    icon: Users,
-    href: "/dashboard/customers",
-  },
-  {
-    label: "Settings",
-    icon: Settings,
-    href: "/dashboard/settings",
-  },
+  // {
+  //   label: "Customers",
+  //   icon: Users,
+  //   href: "/dashboard/customers",
+  // },
+  // {
+  //   label: "Settings",
+  //   icon: Settings,
+  //   href: "/dashboard/settings",
+  // },
 ];
 
 export function Sidebar() {

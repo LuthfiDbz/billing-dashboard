@@ -4,52 +4,79 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { DollarSign, Users, FileText, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logout } from "../login/actions";
+import { RevenueChart } from "@/components/dashboard/RevenueChart";
 
-// Dummy data - akan diganti dengan fetch dari Supabase nanti
-const statsData = [
+const revenueData = [
+  { month: "Sep", revenue: 8500000, expenses: 6200000 },
+  { month: "Oct", revenue: 9200000, expenses: 6800000 },
+  { month: "Nov", revenue: 10100000, expenses: 7100000 },
+  { month: "Dec", revenue: 11800000, expenses: 7500000 },
+  { month: "Jan", revenue: 10900000, expenses: 7300000 },
+  { month: "Feb", revenue: 12345000, expenses: 7800000 },
+];
+
+
+export default function DashboardPage() {
+  const currentMonthRevenue = revenueData[revenueData.length - 1].revenue;
+  const previousMonthRevenue = revenueData[revenueData.length - 2].revenue;
+  const revenueGrowth = ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+  
+  const totalRevenue = revenueData.reduce((sum, item) => sum + item.revenue, 0);
+  const totalExpenses = revenueData.reduce((sum, item) => sum + item.expenses, 0);
+  const netProfit = totalRevenue - totalExpenses;
+  const profitMargin = (netProfit / totalRevenue) * 100;
+
+  const statsData = [
   {
-    title: "Total Revenue",
-    value: "Rp 12,345,000",
+    title: "Current Month Revenue",
+    value: new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(currentMonthRevenue),
     icon: DollarSign,
     iconBgColor: "bg-blue-500",
     trend: {
-      value: 20,
-      label: "Than Last Month",
+      value: Math.round(revenueGrowth),
+      label: "vs Last Month",
     },
   },
   {
-    title: "Active Subscriptions",
-    value: "3,213",
-    icon: Users,
+    title: "Total Revenue (6M)",
+    value: new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(totalRevenue),
+    icon: TrendingUp,
     iconBgColor: "bg-green-500",
     trend: {
-      value: 8,
-      label: "Than Last Month",
+      value: 24,
+      label: "Year over Year",
     },
   },
   {
-    title: "Pending Invoices",
-    value: "65",
+    title: "Active Invoices",
+    value: "23",
     icon: FileText,
     iconBgColor: "bg-orange-500",
     trend: {
-      value: 32,
-      label: "Than Last Month",
+      value: 12,
+      label: "From Last Month",
     },
   },
   {
-    title: "Monthly Growth",
-    value: "72%",
-    icon: TrendingUp,
+    title: "Profit Margin",
+    value: `${profitMargin.toFixed(1)}%`,
+    icon: Users,
     iconBgColor: "bg-purple-500",
     trend: {
       value: 3,
-      label: "Than Last Month",
+      label: "From Last Period",
     },
   },
 ];
 
-export default function DashboardPage() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -76,9 +103,14 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Placeholder untuk section berikutnya */}
-          <div className="mt-6 rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            <p>Chart & Table Section akan ditambahkan di task berikutnyaaaa</p>
+          <br />
+
+          <div className="grid gap-6 grid-cols-2">
+            <RevenueChart data={revenueData} />
+            {/* <RevenueChart data={revenueData} /> */}
+            <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+              <p>Recent Invoices section</p>
+            </div>
           </div>
         </main>
       </div>
