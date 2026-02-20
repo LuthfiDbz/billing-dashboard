@@ -26,28 +26,23 @@ export function DeleteInvoiceDialog({
   invoice,
   open,
   onOpenChange,
-  onConfirm,
 }: DeleteInvoiceDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete() {
     if (!invoice) return;
 
-    if(onConfirm) {
-      setIsDeleting(true)
-      try {
-        const result = await deleteInvoice(invoice?.id || "")
-        if (result?.error) return alert(result.error)
-        onOpenChange(false);
-        alert(`Invoice deleted successfully!`);
-      } catch (err) {
-        console.error(err)
-        alert("Failed to delete invoice. Please try again.");
-      } finally {
-        setIsDeleting(false)
-      }
-    } else {
+    setIsDeleting(true)
+    try {
+      const result = await deleteInvoice(invoice?.id || "")
+      if (result?.error) return alert(result.error)
       onOpenChange(false);
+      alert(`Invoice deleted successfully!`);
+    } catch (err) {
+      console.error(err)
+      alert("Failed to delete invoice. Please try again.");
+    } finally {
+      setIsDeleting(false)
     }
   }
 

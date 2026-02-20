@@ -64,7 +64,6 @@ export function EditInvoiceForm({
     },
   });
 
-  // Pre-fill form saat invoice berubah
   useEffect(() => {
     if (invoice) {
       form.reset({
@@ -77,24 +76,12 @@ export function EditInvoiceForm({
   }, [invoice, form]);
 
   async function onSubmit(values: InvoiceFormValues) {
-    // TODO: Implement Supabase update
-    // const { error } = await supabase
-    //   .from('invoices')
-    //   .update(values)
-    //   .eq('id', invoice?.id)
-    
-    console.log("Update invoice:", invoice?.id, values);
-    
-   
-
     // setIsDeleting(true)
     try {
       const result = await updateInvoice(invoice?.id || "", values)
       if (result?.error) return alert(result.error)
       form.reset();
-      // Close sheet after submit
       onOpenChange(false);
-       // Show success message (optional)
       alert(`Invoice ${invoice?.id} updated successfully!`);
     } catch (err) {
       console.error(err)

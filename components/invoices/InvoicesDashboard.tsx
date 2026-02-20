@@ -9,6 +9,7 @@ import { AddInvoiceForm } from "./AddInvoiceForm";
 import { EditInvoiceForm } from "./EditInvoiceForm";
 import { DeleteInvoiceDialog } from "./DeleteInvoiceDialog";
 import { generateInvoicePDF, InvoiceData } from "@/lib/download-inv-generator";
+import { ViewInvoiceDialog } from "./ViewInvoiceDialog";
 
 interface InvoicesDashboardProps {
   dataInvoices: Invoice[];
@@ -17,14 +18,14 @@ interface InvoicesDashboardProps {
 export default function InvoicesDashboard({dataInvoices} : InvoicesDashboardProps) {
 	const [editInvoice, setEditInvoice] = useState<Invoice | null>(null);
 	const [deleteInvoice, setDeleteInvoice] = useState<Invoice | null>(null);
+  const [viewInvoice, setViewInvoice] = useState<Invoice | null>(null);
 	const [isEditOpen, setIsEditOpen] = useState(false)
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isViewOpen, setIsViewOpen] = useState(false)
   // Handler untuk View (opsional - bisa redirect ke detail page)
   const handleView = (invoice: Invoice) => {
-    console.log("View invoice:", invoice);
-    // TODO: Implement view detail
-    // router.push(`/dashboard/invoices/${invoice.id}`)
-    // alert(`View detail for invoice #${invoice?.id.slice(0, 8)}`);
+    setViewInvoice(invoice);
+    setIsViewOpen(true);
   };
 
   // Handler untuk Edit
@@ -39,15 +40,7 @@ export default function InvoicesDashboard({dataInvoices} : InvoicesDashboardProp
     setIsDeleteOpen(true);
   };
 
-	// Callback untuk konfirmasi delete (opsional)
-  const handleConfirmDelete = async (invoiceId: string) => {
-    // TODO: Implement Supabase delete
-    console.log("Confirmed delete:", invoiceId);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
   const handleDownload = (invoice: Invoice) => {
-    console.log("masukk gaa")
     const invoiceData: InvoiceData = {
       id: invoice.id || "",
       customer_name: invoice.customer_name,
@@ -117,7 +110,12 @@ export default function InvoicesDashboard({dataInvoices} : InvoicesDashboardProp
         invoice={deleteInvoice}
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        onConfirm={handleConfirmDelete}
+      />
+
+      <ViewInvoiceDialog
+        invoice={viewInvoice}
+        open={isViewOpen}
+        onOpenChange={setIsViewOpen}
       />
     </div>
   );

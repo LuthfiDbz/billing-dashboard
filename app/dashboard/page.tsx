@@ -5,6 +5,8 @@ import { DollarSign, Users, FileText, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logout } from "../login/actions";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
+import { createClient } from "@/lib/supabase/server";
+import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 
 const revenueData = [
   { month: "Sep", revenue: 8500000, expenses: 6200000 },
@@ -16,7 +18,7 @@ const revenueData = [
 ];
 
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const currentMonthRevenue = revenueData[revenueData.length - 1].revenue;
   const previousMonthRevenue = revenueData[revenueData.length - 2].revenue;
   const revenueGrowth = ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
@@ -77,6 +79,9 @@ export default function DashboardPage() {
   },
 ];
 
+  const supabase = await createClient()
+  const { data: invoices } = await supabase.from('invoices').select('*').order("created_at")
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -108,9 +113,7 @@ export default function DashboardPage() {
           <div className="grid gap-6 grid-cols-2">
             <RevenueChart data={revenueData} />
             {/* <RevenueChart data={revenueData} /> */}
-            <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-              <p>Recent Invoices section</p>
-            </div>
+            <RecentInvoices invoices={invoices!} />
           </div>
         </main>
       </div>

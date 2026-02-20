@@ -10,6 +10,7 @@ import { id } from "date-fns/locale";
 
 interface Invoice {
   id: string;
+  invoice_number: string;
   customer_name: string;
   amount: number;
   status: "Paid" | "Pending" | "Overdue";
@@ -59,7 +60,7 @@ export function RecentInvoices({ invoices, limit = 5 }: RecentInvoicesProps) {
               <div className="space-y-1">
                 <p className="font-medium">{invoice.customer_name}</p>
                 <p className="text-sm text-muted-foreground">
-                  #{invoice.id.slice(0, 8)} •{" "}
+                  #{invoice.invoice_number} •{" "}
                   {format(new Date(invoice.due_date), "dd MMM yyyy", {
                     locale: id,
                   })}

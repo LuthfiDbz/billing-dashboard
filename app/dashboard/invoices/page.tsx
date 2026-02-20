@@ -9,10 +9,6 @@ import InvoicesDashboard from "@/components/invoices/InvoicesDashboard";
 export default async function InvoicesPage() {
   const supabase = await createClient()
   const { data: invoices } = await supabase.from('invoices').select('*').order("created_at")
-  console.log("=========")
-  console.log(invoices)
-
-
   return (
     <>
       <InvoicesDashboard dataInvoices={invoices!} />

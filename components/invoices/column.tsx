@@ -113,8 +113,6 @@ export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
               onClick={() => {
                 if (actions?.onView) {
                   actions.onView(invoice);
-                } else {
-                  console.log("View details:", invoice.id);
                 }
               }}  
             >
@@ -125,8 +123,6 @@ export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
               onClick={() => {
                 if (actions?.onEdit) {
                   actions.onEdit(invoice);
-                } else {
-                  console.log("Edit invoice:", invoice.id);
                 }
               }}
             >
@@ -137,8 +133,6 @@ export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
               onClick={() => {
                 if (actions?.onDownload) {
                   actions.onDownload(invoice);
-                } else {
-                  console.log("Download invoice:", invoice.id);
                 }
               }}
             >
@@ -151,8 +145,6 @@ export const columns = (actions?: InvoiceActions): ColumnDef<Invoice>[] => [
               onClick={() => {
                 if (actions?.onDelete) {
                   actions.onDelete(invoice);
-                } else {
-                  console.log("Delete invoice:", invoice.id);
                 }
               }}
             >

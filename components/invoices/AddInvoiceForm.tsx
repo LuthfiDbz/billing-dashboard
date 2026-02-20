@@ -58,9 +58,6 @@ export function AddInvoiceForm() {
   async function onSubmit(values: InvoiceFormValues) {
     // TODO: Akan diganti dengan Supabase insert
     values.invoice_number = "INV-" + Date.now().toString()
-    // values.due_date = format(values.due_date, "yyyy-MM-dd");
-    console.log("Form submitted:", values);
-    // return
 
     // setIsDeleting(true)
     try {
@@ -73,8 +70,6 @@ export function AddInvoiceForm() {
     } finally {
       // setIsDeleting(false)
     }
-    
-    // Reset form dan tutup sheet setelah submit
   }
 
   return (

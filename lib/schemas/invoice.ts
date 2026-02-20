@@ -5,7 +5,7 @@ export const invoiceSchema = z.object({
   invoice_number: z.string(),
   customer_name: z.string().min(3, "Nama minimal 3 karakter").max(50),
   amount: z.coerce.number().positive("Angka harus lebih dari 0"), // coerce handle string ke number otomatis
-  due_date: z.date("A"),
+  due_date: z.coerce.date("A"),
   status: z.enum(["Paid", "Pending", "Overdue", "Draft"]),
 });
 
